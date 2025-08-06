@@ -3,6 +3,7 @@ import { useTheme } from "./theme-provider";
 import { useMousePosition } from "@/hooks/use-mouse-position";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Rocket, Play, User, Terminal } from "lucide-react";
+import avatarImage from "@assets/ChatGPT Image Aug 6, 2025 at 01_50_38 PM_1754470256896.png";
 
 export function HeroSection() {
   const { theme } = useTheme();
@@ -178,8 +179,12 @@ $ _`}
               ref={avatarRef}
               className="dark:hidden w-32 h-32 mx-auto mb-6 relative transition-transform duration-100"
             >
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 neon-glow glass border-4 border-white/30 flex items-center justify-center animate-float">
-                <User className="text-4xl text-white" />
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 neon-glow glass border-4 border-white/30 overflow-hidden animate-float">
+                <img 
+                  src={avatarImage} 
+                  alt="Avatar" 
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-400 rounded-full animate-pulse"></div>
             </div>
@@ -196,8 +201,12 @@ $ _`}
                 className="w-64 h-40 mx-auto glass bg-gray-900/80 border border-gray-700/50 rounded-lg p-4 cursor-pointer hover:scale-105 transition-transform duration-200"
               >
                 <div className="flex items-start space-x-3">
-                  <div className="w-12 h-16 bg-gradient-to-br from-green-400 to-orange-400 rounded-sm flex items-center justify-center">
-                    <Terminal className="text-black text-lg" />
+                  <div className="w-12 h-16 bg-gradient-to-br from-green-400 to-orange-400 rounded-sm flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={avatarImage} 
+                      alt="Avatar" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="flex-1 text-left">
                     <div className="text-green-400 font-mono text-sm">ID: DEV-001</div>
