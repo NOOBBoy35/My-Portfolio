@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useTheme } from "./theme-provider";
+import { useTheme } from "@/context/theme-context";
 
 interface Particle {
   x: number;

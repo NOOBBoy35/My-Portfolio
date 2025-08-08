@@ -15,7 +15,7 @@ export function Footer() {
               />
             </div>
             <div className="text-2xl font-space font-bold text-gradient">
-              [Your Name]
+              Abdullah Mansoor
             </div>
           </div>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -48,7 +48,7 @@ export function Footer() {
             </a>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-600">
-            © 2024 [Your Name]. All rights reserved. Made with ❤️ and lots of ☕
+            © 2024 Abdullah Mansoor. All rights reserved. Made with ❤️ and lots of ☕
           </p>
         </div>
       </div>

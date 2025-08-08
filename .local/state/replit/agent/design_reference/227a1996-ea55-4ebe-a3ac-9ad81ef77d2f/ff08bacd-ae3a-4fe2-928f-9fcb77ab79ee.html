@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Creative Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    colors: {
+                        'neon': {
+                            blue: '#0066FF',
+                            cyan: '#00D4FF',
+                            green: '#00FF41',
+                            orange: '#FF6B35',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(0, 102, 255, 0.5); }
+            to { box-shadow: 0 0 30px rgba(0, 102, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.3); }
+        }
+        .code-bg {
+            background: linear-gradient(45deg, rgba(0, 102, 255, 0.1), rgba(0, 212, 255, 0.1));
+            background-size: 400% 400%;
+            animation: gradient-shift 8s ease infinite;
+        }
+        .terminal-bg {
+            background: linear-gradient(45deg, rgba(0, 255, 65, 0.1), rgba(255, 107, 53, 0.1));
+            background-size: 400% 400%;
+            animation: gradient-shift 8s ease infinite;
+        }
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .glass {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .text-gradient {
+            background: linear-gradient(45deg, #0066FF, #00D4FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .dark .text-gradient {
+            background: linear-gradient(45deg, #00FF41, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .typing-effect {
+            border-right: 2px solid;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: currentColor; }
+        }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.8), transparent);
+            border-radius: 50%;
+            animation: float-particle 20s linear infinite;
+        }
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #0066FF, #00D4FF);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        .dark .scroll-progress {
+            background: linear-gradient(90deg, #00FF41, #FF6B35);
+        }
+        #avatar {
+            transition: all 0.1s ease;
+        }
+        #idCard {
+            transition: all 0.2s ease;
+            transform-origin: top center;
+        }
+        .project-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+        .service-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .service-card:hover {
+            transform: translateY(-15px) rotateY(5deg);
+        }
+        .social-icon {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .social-icon:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+    </style>
+</head>
+<body class="font-inter transition-all duration-500 ease-in-out">
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+
+    <!-- Animated Background Particles -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0" id="particles-container">
+        <!-- Particles will be generated by JavaScript -->
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass bg-white/10 dark:bg-black/20 border-b border-white/20 dark:border-gray-800/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-xl font-space font-bold text-gradient">[Logo]</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#hero" class="text-gray-700 dark:text-gray-300 hover:text-neon-blue dark:hover:text-neon-green transition-colors">Home</a>
+                    <a href="#about" class="text-gray-700 dark:text-gray-300 hover:text-neon-blue dark:hover:text-neon-green transition-colors">About</a>
+                    <a href="#services" class="text-gray-700 dark:text-gray-300 hover:text-neon-blue dark:hover:text-neon-green transition-colors">Services</a>
+                    <a href="#projects" class="text-gray-700 dark:text-gray-300 hover:text-neon-blue dark:hover:text-neon-green transition-colors">Projects</a>
+                    <a href="#contact" class="text-gray-700 dark:text-gray-300 hover:text-neon-blue dark:hover:text-neon-green transition-colors">Contact</a>
+                </div>
+                <button id="theme-toggle" class="p-2 rounded-full glass bg-white/10 dark:bg-gray-800/20 border border-white/20 dark:border-gray-700/30 hover:scale-110 transition-all">
+                    <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                    <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden code-bg dark:terminal-bg">
+        <!-- Light Mode: Code Background -->
+        <div class="absolute inset-0 opacity-10 dark:opacity-0 font-mono text-xs text-gray-600 leading-relaxed p-8 overflow-hidden">
+            <pre class="whitespace-pre-wrap">
+const developer = {
+  name: 'Creative Developer',
+  skills: ['React', 'Node.js', 'Python', 'AI/ML'],
+  passion: 'Building the future',
+  status: 'Available for hire'
+};
+
+function createMagic() {
+  return innovation + creativity + code;
+}
+
+// Building dreams one line at a time...
+class Portfolio extends Component {
+  render() {
+    return (
+      &lt;div className="stunning-portfolio"&gt;
+        &lt;Hero animation="cinematic" /&gt;
+        &lt;Skills interactive={true} /&gt;
+        &lt;Projects showcase="interactive" /&gt;
+        &lt;Contact cta="Let's work together" /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Dark Mode: Terminal Background -->
+        <div class="absolute inset-0 opacity-0 dark:opacity-10 font-mono text-xs text-green-400 leading-relaxed p-8 overflow-hidden">
+            <pre class="whitespace-pre-wrap">
+$ whoami
+creative-developer
+
+$ cat skills.txt
+> Frontend Development (React, Vue, Angular)
+> Backend Development (Node.js, Python, Go)
+> AI/ML Engineering (TensorFlow, PyTorch)
+> DevOps & Cloud (AWS, Docker, Kubernetes)
+> UI/UX Design (Figma, Adobe Suite)
+
+$ ls projects/
+awesome-web-app.js
+ai-chatbot.py
+mobile-app/
+design-system/
+api-server.go
+
+$ status
+● Online and available for new projects
+● Passionate about cutting-edge tech
+● Always learning, always building
+
+$ git log --oneline
+a1b2c3d Added stunning portfolio features
+d4e5f6g Implemented advanced animations
+g7h8i9j Created interactive components
+j0k1l2m Built responsive design system
+
+$ echo "Let's build something amazing together!"
+Let's build something amazing together!
+
+$ _
+            </pre>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center">
+                <!-- Avatar/ID Card Container -->
+                <div class="mb-8 relative">
+                    <!-- Light Mode: 3D Avatar -->
+                    <div id="avatar" class="dark:hidden w-32 h-32 mx-auto mb-6 relative">
+                        <div class="w-full h-full rounded-full bg-gradient-to-br from-neon-blue to-neon-cyan animate-glow glass border-4 border-white/30 flex items-center justify-center">
+                            <i class="fas fa-user text-4xl text-white"></i>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-400 rounded-full animate-pulse"></div>
+                    </div>
+
+                    <!-- Dark Mode: Hanging ID Card -->
+                    <div class="hidden dark:block">
+                        <div class="flex justify-center mb-6">
+                            <!-- Ribbon -->
+                            <div class="w-1 h-16 bg-gradient-to-b from-gray-400 to-gray-600 rounded-full shadow-lg"></div>
+                        </div>
+                        <div id="idCard" class="w-64 h-40 mx-auto glass bg-gray-900/80 border border-gray-700/50 rounded-lg p-4 cursor-pointer hover:scale-105 transition-transform">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-16 bg-gradient-to-br from-neon-green to-neon-orange rounded-sm flex items-center justify-center">
+                                    <i class="fas fa-terminal text-black text-lg"></i>
+                                </div>
+                                <div class="flex-1 text-left">
+                                    <div class="text-neon-green font-mono text-sm">ID: DEV-001</div>
+                                    <div class="text-white font-semibold">Creative Developer</div>
+                                    <div class="text-gray-400 text-xs mt-1">Full-Stack • AI/ML</div>
+                                    <div class="text-gray-500 text-xs mt-2">Access Level: ∞</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Text -->
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-space font-bold mb-6">
+                    <span class="block text-gray-900 dark:text-white mb-2">Hi, I'm</span>
+                    <span class="block text-gradient animate-pulse-slow">[Your Name]</span>
+                </h1>
+
+                <div class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
+                    <span id="typing-text" class="typing-effect">A creative force at the intersection of code, design, and AI.</span>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button class="px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-cyan dark:from-neon-green dark:to-neon-orange text-white font-semibold rounded-full glass hover:scale-110 transition-all duration-300 shadow-2xl">
+                        <i class="fas fa-rocket mr-2"></i>Let's Create Something Amazing
+                    </button>
+                    <button class="px-8 py-4 glass bg-white/10 dark:bg-gray-800/20 border border-white/20 dark:border-gray-700/30 text-gray-900 dark:text-white font-semibold rounded-full hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-play mr-2"></i>Watch My Work
+                    </button>
+                </div>
+
+                <!-- Scroll Indicator -->
+                <div class="animate-bounce-slow">
+                    <i class="fas fa-chevron-down text-2xl text-gray-500 dark:text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What I Do Section -->
+    <section id="about" class="py-20 bg-gray-50 dark:bg-gray-900 relative">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-space font-bold text-center mb-16 text-gray-900 dark:text-white">
+                What I <span class="text-gradient">Create</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                <!-- Frontend Development -->
+                <div class="skill-card text-center group cursor-pointer">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
+                        <i class="fab fa-react text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Frontend</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Crafting beautiful, interactive user experiences with modern frameworks</p>
+                </div>
+
+                <!-- Backend Development -->
+                <div class="skill-card text-center group cursor-pointer">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
+                        <i class="fas fa-server text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Backend</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Building robust, scalable server architectures and APIs</p>
+                </div>
+
+                <!-- Design -->
+                <div class="skill-card text-center group cursor-pointer">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
+                        <i class="fab fa-figma text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">UI/UX Design</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Creating intuitive, stunning designs that users love</p>
+                </div>
+
+                <!-- AI/ML -->
+                <div class="skill-card text-center group cursor-pointer">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
+                        <i class="fas fa-brain text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">AI/ML</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Developing intelligent systems that learn and adapt</p>
+                </div>
+
+                <!-- Creative Art -->
+                <div class="skill-card text-center group cursor-pointer">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
+                        <i class="fas fa-palette text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Creative Art</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Blending technology with artistic expression and creativity</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-space font-bold text-center mb-16 text-gray-900 dark:text-white">
+                <span class="text-gradient">Services</span> I Offer
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Full-Stack Development -->
+                <div class="service-card glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-neon-blue to-neon-cyan rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-code text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-4">Full-Stack Development</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Complete web applications from concept to deployment, using cutting-edge technologies.</p>
+                    <div class="text-neon-blue dark:text-neon-green font-semibold">From $5,000</div>
+                </div>
+
+                <!-- UI/UX Design -->
+                <div class="service-card glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-paint-brush text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-4">UI/UX Design</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">User-centered design that converts visitors into customers with stunning interfaces.</p>
+                    <div class="text-neon-blue dark:text-neon-green font-semibold">From $3,000</div>
+                </div>
+
+                <!-- AI Chatbots -->
+                <div class="service-card glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-robot text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-4">AI Chatbots</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Intelligent conversational AI that enhances customer experience and automates support.</p>
+                    <div class="text-neon-blue dark:text-neon-green font-semibold">From $2,500</div>
+                </div>
+
+                <!-- Brand Identity -->
+                <div class="service-card glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-star text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-4">Brand Identity</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Complete visual identity packages that make your brand unforgettable.</p>
+                    <div class="text-neon-blue dark:text-neon-green font-semibold">From $4,000</div>
+                </div>
+
+                <!-- Mobile Apps -->
+                <div class="service-card glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-mobile-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-4">Mobile Apps</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Native and cross-platform mobile applications that users love to use.</p>
+                    <div class="text-neon-blue dark:text-neon-green font-semibold">From $8,000</div>
+                </div>
+
+                <!-- Consulting -->
+                <div class="service-card glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-lightbulb text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-4">Tech Consulting</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Strategic technology advice to accelerate your business growth and innovation.</p>
+                    <div class="text-neon-blue dark:text-neon-green font-semibold">From $200/hr</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Gallery -->
+    <section id="projects" class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-space font-bold text-center mb-4 text-gray-900 dark:text-white">
+                Featured <span class="text-gradient">Projects</span>
+            </h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-16 max-w-2xl mx-auto">
+                A showcase of innovative projects that blend creativity with cutting-edge technology
+            </p>
+
+            <!-- Project Gallery -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Project 1 -->
+                <div class="project-card glass bg-white/50 dark:bg-gray-800/50 rounded-2xl overflow-hidden border border-white/20 dark:border-gray-700/30 hover:shadow-2xl group cursor-pointer">
+                    <!-- AI-generated futuristic workspace setup -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500" 
+                         alt="Futuristic AI-powered dashboard interface" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="p-6">
+                        <h3 class="text-xl font-space font-semibold text-gray-900 dark:text-white mb-2">AI Dashboard Pro</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Machine learning analytics platform with real-time data visualization</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs rounded-full">React</span>
+                            <span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs rounded-full">Python</span>
+                            <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs rounded-full">TensorFlow</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="text-neon-blue dark:text-neon-green hover:underline font-semibold">View Project</button>
+                            <div class="flex space-x-2">
+                                <i class="fab fa-github text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                                <i class="fas fa-external-link-alt text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card glass bg-white/50 dark:bg-gray-800/50 rounded-2xl overflow-hidden border border-white/20 dark:border-gray-700/30 hover:shadow-2xl group cursor-pointer">
+                    <!-- Creative coding environment -->
+                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500" 
+                         alt="Interactive e-commerce mobile app interface" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="p-6">
+                        <h3 class="text-xl font-space font-semibold text-gray-900 dark:text-white mb-2">E-Commerce Mobile</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Next-generation shopping experience with AR try-on features</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs rounded-full">React Native</span>
+                            <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 text-xs rounded-full">Node.js</span>
+                            <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-full">AR.js</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="text-neon-blue dark:text-neon-green hover:underline font-semibold">View Project</button>
+                            <div class="flex space-x-2">
+                                <i class="fab fa-github text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                                <i class="fas fa-external-link-alt text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card glass bg-white/50 dark:bg-gray-800/50 rounded-2xl overflow-hidden border border-white/20 dark:border-gray-700/30 hover:shadow-2xl group cursor-pointer">
+                    <!-- Modern tech workspace -->
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500" 
+                         alt="Blockchain-powered social media platform" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="p-6">
+                        <h3 class="text-xl font-space font-semibold text-gray-900 dark:text-white mb-2">Social DApp</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Decentralized social platform built on blockchain technology</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs rounded-full">Web3</span>
+                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs rounded-full">Solidity</span>
+                            <span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs rounded-full">Vue.js</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="text-neon-blue dark:text-neon-green hover:underline font-semibold">View Project</button>
+                            <div class="flex space-x-2">
+                                <i class="fab fa-github text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                                <i class="fas fa-external-link-alt text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card glass bg-white/50 dark:bg-gray-800/50 rounded-2xl overflow-hidden border border-white/20 dark:border-gray-700/30 hover:shadow-2xl group cursor-pointer">
+                    <!-- Abstract digital art -->
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500" 
+                         alt="AI-powered creative design tool interface" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="p-6">
+                        <h3 class="text-xl font-space font-semibold text-gray-900 dark:text-white mb-2">Creative AI Studio</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">AI-powered design tool for generating artwork and illustrations</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 text-xs rounded-full">Stable Diffusion</span>
+                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs rounded-full">FastAPI</span>
+                            <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs rounded-full">Svelte</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="text-neon-blue dark:text-neon-green hover:underline font-semibold">View Project</button>
+                            <div class="flex space-x-2">
+                                <i class="fab fa-github text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                                <i class="fas fa-external-link-alt text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card glass bg-white/50 dark:bg-gray-800/50 rounded-2xl overflow-hidden border border-white/20 dark:border-gray-700/30 hover:shadow-2xl group cursor-pointer">
+                    <!-- Abstract digital art -->
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500" 
+                         alt="Real-time collaboration platform for remote teams" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="p-6">
+                        <h3 class="text-xl font-space font-semibold text-gray-900 dark:text-white mb-2">Team Sync Pro</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Real-time collaboration platform with video conferencing and file sharing</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-xs rounded-full">WebRTC</span>
+                            <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs rounded-full">Socket.io</span>
+                            <span class="px-2 py-1 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-xs rounded-full">Express</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="text-neon-blue dark:text-neon-green hover:underline font-semibold">View Project</button>
+                            <div class="flex space-x-2">
+                                <i class="fab fa-github text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                                <i class="fas fa-external-link-alt text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card glass bg-white/50 dark:bg-gray-800/50 rounded-2xl overflow-hidden border border-white/20 dark:border-gray-700/30 hover:shadow-2xl group cursor-pointer">
+                    <!-- Abstract digital art -->
+                    <img src="https://pixabay.com/get/g758f6595d3fe72aa31d640d998d0498799eeeb292abb3db90b76a2d5b3e0c9a805601668492564f1ab00bae71ab35663036bfdf053fd703cd5cdb0dd3857e2e9_1280.jpg" 
+                         alt="Smart IoT home automation system dashboard" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="p-6">
+                        <h3 class="text-xl font-space font-semibold text-gray-900 dark:text-white mb-2">Smart Home Hub</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">IoT-powered home automation system with voice control and AI</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs rounded-full">Raspberry Pi</span>
+                            <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs rounded-full">MQTT</span>
+                            <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 text-xs rounded-full">Flutter</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="text-neon-blue dark:text-neon-green hover:underline font-semibold">View Project</button>
+                            <div class="flex space-x-2">
+                                <i class="fab fa-github text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                                <i class="fas fa-external-link-alt text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View All Projects Button -->
+            <div class="text-center">
+                <button class="px-8 py-4 glass bg-white/10 dark:bg-gray-800/20 border border-white/20 dark:border-gray-700/30 text-gray-900 dark:text-white font-semibold rounded-full hover:scale-110 transition-all duration-300">
+                    <i class="fas fa-folder-open mr-2"></i>View All Projects
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white dark:bg-gray-800 relative overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl md:text-5xl font-space font-bold text-center mb-4 text-gray-900 dark:text-white">
+                Let's <span class="text-gradient">Work Together</span>
+            </h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-16 max-w-2xl mx-auto">
+                Ready to bring your ideas to life? Let's create something amazing together that will make an impact.
+            </p>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Contact Info -->
+                    <div class="space-y-8">
+                        <div class="text-center lg:text-left">
+                            <h3 class="text-2xl font-space font-semibold text-gray-900 dark:text-white mb-6">Get in Touch</h3>
+                            
+                            <!-- Social Media Icons -->
+                            <div class="flex justify-center lg:justify-start space-x-6 mb-8">
+                                <a href="#" class="social-icon w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center hover:shadow-2xl">
+                                    <i class="fab fa-instagram text-2xl text-white"></i>
+                                </a>
+                                <a href="#" class="social-icon w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center hover:shadow-2xl">
+                                    <i class="fab fa-facebook text-2xl text-white"></i>
+                                </a>
+                                <a href="#" class="social-icon w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center hover:shadow-2xl">
+                                    <i class="fab fa-github text-2xl text-white"></i>
+                                </a>
+                                <a href="#" class="social-icon w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center hover:shadow-2xl">
+                                    <i class="fab fa-linkedin text-2xl text-white"></i>
+                                </a>
+                                <a href="#" class="social-icon w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center hover:shadow-2xl">
+                                    <i class="fab fa-whatsapp text-2xl text-white"></i>
+                                </a>
+                            </div>
+
+                            <!-- Contact Methods -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-center lg:justify-start space-x-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-neon-blue to-neon-cyan rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-envelope text-white"></i>
+                                    </div>
+                                    <span class="text-gray-700 dark:text-gray-300">hello@yourname.dev</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start space-x-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-phone text-white"></i>
+                                    </div>
+                                    <span class="text-gray-700 dark:text-gray-300">+1 (555) 123-4567</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start space-x-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-map-marker-alt text-white"></i>
+                                    </div>
+                                    <span class="text-gray-700 dark:text-gray-300">San Francisco, CA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="glass bg-white/50 dark:bg-gray-900/50 p-8 rounded-2xl border border-white/20 dark:border-gray-700/30">
+                        <form class="space-y-6">
+                            <div>
+                                <input type="text" placeholder="Your Name" 
+                                       class="w-full px-4 py-3 glass bg-white/30 dark:bg-gray-800/30 border border-white/20 dark:border-gray-700/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-neon-blue dark:focus:ring-neon-green text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+                            </div>
+                            <div>
+                                <input type="email" placeholder="Your Email" 
+                                       class="w-full px-4 py-3 glass bg-white/30 dark:bg-gray-800/30 border border-white/20 dark:border-gray-700/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-neon-blue dark:focus:ring-neon-green text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+                            </div>
+                            <div>
+                                <input type="text" placeholder="Project Budget" 
+                                       class="w-full px-4 py-3 glass bg-white/30 dark:bg-gray-800/30 border border-white/20 dark:border-gray-700/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-neon-blue dark:focus:ring-neon-green text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+                            </div>
+                            <div>
+                                <textarea placeholder="Tell me about your project..." rows="4"
+                                          class="w-full px-4 py-3 glass bg-white/30 dark:bg-gray-800/30 border border-white/20 dark:border-gray-700/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-neon-blue dark:focus:ring-neon-green text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"></textarea>
+                            </div>
+                            <button type="submit" 
+                                    class="w-full px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-cyan dark:from-neon-green dark:to-neon-orange text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl">
+                                <i class="fas fa-paper-plane mr-2"></i>Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-gray-900 dark:bg-black border-t border-gray-200 dark:border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <div class="text-2xl font-space font-bold text-gradient mb-4">[Your Name]</div>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                    Crafting digital experiences that inspire and innovate
+                </p>
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="#" class="text-gray-500 hover:text-neon-blue dark:hover:text-neon-green transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-neon-blue dark:hover:text-neon-green transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-neon-blue dark:hover:text-neon-green transition-colors">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-neon-blue dark:hover:text-neon-green transition-colors">
+                        <i class="fab fa-dribbble text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-600">
+                    © 2024 [Your Name]. All rights reserved. Made with ❤️ and lots of ☕
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Theme Toggle Functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or default to light mode
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            html.classList.toggle('dark', currentTheme === 'dark');
+
+            themeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', newTheme);
+                
+                // Regenerate particles with new theme colors
+                generateParticles();
+            });
+
+            // Smooth Scroll for Navigation Links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Scroll Progress Bar
+            function updateScrollProgress() {
+                const scrollProgress = document.querySelector('.scroll-progress');
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                scrollProgress.style.width = scrollPercent + '%';
+            }
+
+            window.addEventListener('scroll', updateScrollProgress);
+
+            // Animated Background Particles
+            function generateParticles() {
+                const container = document.getElementById('particles-container');
+                container.innerHTML = ''; // Clear existing particles
+                
+                const particleCount = window.innerWidth < 768 ? 30 : 50;
+                const isDark = document.documentElement.classList.contains('dark');
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    // Random positioning and timing
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                    
+                    // Theme-based colors
+                    if (isDark) {
+                        const colors = ['rgba(0, 255, 65, 0.8)', 'rgba(255, 107, 53, 0.8)'];
+                        particle.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]}, transparent)`;
+                    } else {
+                        const colors = ['rgba(0, 102, 255, 0.8)', 'rgba(0, 212, 255, 0.8)'];
+                        particle.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]}, transparent)`;
+                    }
+                    
+                    container.appendChild(particle);
+                }
+            }
+
+            // Initialize particles
+            generateParticles();
+
+            // Avatar Mouse Following (Light Mode)
+            const avatar = document.getElementById('avatar');
+            if (avatar) {
+                document.addEventListener('mousemove', function(e) {
+                    if (!document.documentElement.classList.contains('dark')) {
+                        const rect = avatar.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        
+                        const mouseX = e.clientX;
+                        const mouseY = e.clientY;
+                        
+                        const deltaX = (mouseX - centerX) * 0.1;
+                        const deltaY = (mouseY - centerY) * 0.1;
+                        
+                        avatar.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                    }
+                });
+            }
+
+            // ID Card Dragging (Dark Mode)
+            const idCard = document.getElementById('idCard');
+            if (idCard) {
+                let isDragging = false;
+                let startX, startY, initialX = 0, initialY = 0;
+
+                idCard.addEventListener('mousedown', function(e) {
+                    if (document.documentElement.classList.contains('dark')) {
+                        isDragging = true;
+                        startX = e.clientX - initialX;
+                        startY = e.clientY - initialY;
+                        idCard.style.cursor = 'grabbing';
+                    }
+                });
+
+                document.addEventListener('mousemove', function(e) {
+                    if (isDragging && document.documentElement.classList.contains('dark')) {
+                        e.preventDefault();
+                        initialX = e.clientX - startX;
+                        initialY = e.clientY - startY;
+                        
+                        // Limit movement
+                        const maxMove = 50;
+                        const limitedX = Math.max(-maxMove, Math.min(maxMove, initialX));
+                        const limitedY = Math.max(-maxMove, Math.min(maxMove, initialY));
+                        
+                        idCard.style.transform = `translate(${limitedX}px, ${limitedY}px) rotate(${limitedX * 0.1}deg)`;
+                    }
+                });
+
+                document.addEventListener('mouseup', function() {
+                    if (isDragging) {
+                        isDragging = false;
+                        idCard.style.cursor = 'pointer';
+                        
+                        // Return to center with animation
+                        setTimeout(() => {
+                            initialX = 0;
+                            initialY = 0;
+                            idCard.style.transform = 'translate(0px, 0px) rotate(0deg)';
+                        }, 100);
+                    }
+                });
+            }
+
+            // Typing Effect for Hero Text
+            const typingText = document.getElementById('typing-text');
+            if (typingText) {
+                const text = "A creative force at the intersection of code, design, and AI.";
+                let index = 0;
+                
+                function typeText() {
+                    if (index < text.length) {
+                        typingText.textContent = text.substring(0, index + 1);
+                        index++;
+                        setTimeout(typeText, 50);
+                    }
+                }
+                
+                // Start typing effect after a short delay
+                setTimeout(typeText, 1000);
+            }
+
+            // GSAP Animations
+            
+            // Hero section animation
+            gsap.from("#hero h1", {
+                duration: 1.5,
+                y: 100,
+                opacity: 0,
+                ease: "power3.out",
+                delay: 0.5
+            });
+
+            gsap.from("#hero .typing-effect", {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                ease: "power2.out",
+                delay: 1
+            });
+
+            // Skill cards animation
+            gsap.from(".skill-card", {
+                scrollTrigger: {
+                    trigger: ".skill-card",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                duration: 0.8,
+                y: 100,
+                opacity: 0,
+                stagger: 0.2,
+                ease: "power2.out"
+            });
+
+            // Service cards animation
+            gsap.from(".service-card", {
+                scrollTrigger: {
+                    trigger: ".service-card",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                duration: 1,
+                y: 100,
+                opacity: 0,
+                stagger: 0.15,
+                ease: "power3.out"
+            });
+
+            // Project cards animation
+            gsap.from(".project-card", {
+                scrollTrigger: {
+                    trigger: ".project-card",
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                duration: 0.8,
+                scale: 0.8,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "back.out(1.7)"
+            });
+
+            // Contact section animation
+            gsap.from("#contact h2", {
+                scrollTrigger: {
+                    trigger: "#contact",
+                    start: "top 70%",
+                    toggleActions: "play none none reverse"
+                },
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                ease: "power2.out"
+            });
+
+            gsap.from(".social-icon", {
+                scrollTrigger: {
+                    trigger: ".social-icon",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                duration: 0.6,
+                scale: 0,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "back.out(1.7)"
+            });
+
+            // Regenerate particles on window resize
+            window.addEventListener('resize', generateParticles);
+
+            // Add subtle parallax effect to background
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                
+                const particles = document.querySelectorAll('.particle');
+                particles.forEach(particle => {
+                    particle.style.transform = `translateY(${rate}px)`;
+                });
+            });
+
+            // Form submission (placeholder - TODO: Implement actual form handling)
+            const contactForm = document.querySelector('#contact form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // TODO: Implement actual form submission logic
+                    alert('Thank you for your message! I\'ll get back to you soon.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

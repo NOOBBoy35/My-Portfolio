@@ -109,6 +109,11 @@
     animation: gradient-shift 8s ease infinite;
   }
 
+  .code-bg > .font-mono {
+    color: #000;
+    font-weight: bold;
+  }
+
   .terminal-bg {
     background: linear-gradient(45deg, hsla(122, 100%, 50%, 0.1), hsla(18, 100%, 60%, 0.1));
     background-size: 400% 400%;
