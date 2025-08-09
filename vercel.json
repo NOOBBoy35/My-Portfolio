@@ -1,18 +1,23 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/[[...path]].ts", "use": "@vercel/node" },
-    { "src": "dist/public/**", "use": "@vercel/static" }
+    {
+      "src": "api/index.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "dist/public/**",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/[[...path]]" },
-    { "src": "/(.*)", "dest": "/api/[[...path]]" }
-  ],
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/public",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/[[...path]]" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/api"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api"
+    }
   ]
 }
