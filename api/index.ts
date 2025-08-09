@@ -1,6 +1,14 @@
 import { createApp } from '../server';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import serverless from 'serverless-http';
+import serverless, { Handler } from 'serverless-http';
+import { IncomingMessage, ServerResponse } from 'http';
+import { Request, Response } from 'express';
+
+interface ErrorWithStack extends Error {
+  statusCode?: number;
+  status?: number;
+  code?: string;
+}
 
 console.log('=== Initializing serverless function ===');
 console.log('Node version:', process.version);
@@ -12,7 +20,8 @@ try {
   console.log('Creating Express app...');
   app = createApp();
   console.log('Express app created successfully');
-} catch (error) {
+} catch (err) {
+  const error = err as ErrorWithStack;
   console.error('Failed to create Express app:', {
     name: error.name,
     message: error.message,
@@ -22,21 +31,19 @@ try {
 }
 
 // Create a request handler for Vercel
-const handler = serverless(app, {
+const handler: Handler = serverless(app, {
   binary: ['image/*', 'font/*', 'application/*'],
-  request: (request, event, context) => {
+  request: (request: IncomingMessage, event: any, context: any) => {
     console.log('Incoming request:', {
-      path: request.path,
+      path: request.url,
       method: request.method,
-      query: request.query,
-      headers: JSON.stringify(request.headers, null, 2),
-      body: JSON.stringify(request.body, null, 2)
+      headers: JSON.stringify(request.headers, null, 2)
     });
   },
-  response: (response) => {
+  response: (response: ServerResponse) => {
     console.log('Outgoing response:', {
       statusCode: response.statusCode,
-      headers: JSON.stringify(response.headers, null, 2)
+      headers: JSON.stringify(response.getHeaders(), null, 2)
     });
   }
 });
@@ -68,7 +75,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     const result = await handler(req, res);
     console.log('Request processed successfully');
     return result;
-  } catch (error) {
+  } catch (err) {
+    const error = err as ErrorWithStack;
     console.error('\n=== ERROR ===');
     const errorDetails = {
       name: error.name,
@@ -78,11 +86,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       statusCode: error.statusCode,
       status: error.status
     };
+    
     console.error('Error details:', JSON.stringify(errorDetails, null, 2));
     
     return res.status(500).json({ 
       error: 'Internal Server Error',
-      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      message: error.message || 'An unexpected error occurred',
       ...(process.env.NODE_ENV !== 'production' ? { 
         details: errorDetails,
         environment: process.env.NODE_ENV,
