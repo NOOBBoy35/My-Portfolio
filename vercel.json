@@ -1,17 +1,18 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "server/index.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "dist/public/**",
-      "use": "@vercel/static"
-    }
+    { "src": "api/[[...path]].ts", "use": "@vercel/node" },
+    { "src": "dist/public/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/server/index.ts" },
-    { "src": "/(.*)", "dest": "/client/dist/index.html" }
+    { "src": "/api/(.*)", "dest": "/api/[[...path]]" },
+    { "src": "/(.*)", "dest": "/api/[[...path]]" }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/public",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/[[...path]]" }
   ]
 }
