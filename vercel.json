@@ -3,21 +3,10 @@
   "builds": [
     {
       "src": "api/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["dist/**"]
-      }
-    },
-    {
-      "src": "dist/public/**",
-      "use": "@vercel/static"
+      "use": "@vercel/node"
     }
   ],
   "routes": [
-    {
-      "src": "/api/health",
-      "dest": "/api/health"
-    },
     {
       "src": "/api/(.*)",
       "dest": "/api"
@@ -26,8 +15,5 @@
       "src": "/(.*)",
       "dest": "/api/$1"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
