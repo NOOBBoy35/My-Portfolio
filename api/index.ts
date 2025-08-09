@@ -4,6 +4,19 @@ import serverless, { Handler } from 'serverless-http';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Request, Response } from 'express';
 
+// Ensure required environment variables are set
+const requiredEnvVars = [
+  'NODE_ENV'
+  // Add other required environment variables here
+];
+
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars);
+  throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+}
+
 interface ErrorWithStack extends Error {
   statusCode?: number;
   status?: number;
@@ -48,12 +61,23 @@ const handler: Handler = serverless(app, {
   }
 });
 
+// Create a simple health check endpoint
 export default async (req: VercelRequest, res: VercelResponse) => {
   console.log('\n=== New Request ===');
   console.log('Method:', req.method);
   console.log('URL:', req.url);
   console.log('Headers:', JSON.stringify(req.headers, null, 2));
   console.log('Query:', JSON.stringify(req.query, null, 2));
+  
+  // Add a simple health check endpoint
+  if (req.url === '/api/health') {
+    return res.status(200).json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      nodeVersion: process.version
+    });
+  }
   
   try {
     // Set CORS headers
