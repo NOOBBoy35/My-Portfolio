@@ -1,6 +1,25 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import { createApp } from '../server';
+import serverless from 'serverless-http';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+// Initialize Express app
+let app;
+try {
+  console.log('Initializing Express app...');
+  app = createApp();
+  console.log('Express app initialized successfully');
+} catch (error) {
+  console.error('Failed to initialize Express app:', error);
+  throw error;
+}
+
+// Create serverless handler
+const handler = serverless(app, {
+  binary: ['image/*', 'font/*', 'application/*']
+});
+
+// Main handler
+export default async (req: VercelRequest, res: VercelResponse) => {
   console.log('\n=== New Request ===');
   console.log('Method:', req.method);
   console.log('URL:', req.url);
@@ -18,18 +37,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Simple response to verify the function is working
-    return res.status(200).json({
-      status: 'success',
-      message: 'Server is working!',
-      timestamp: new Date().toISOString(),
-      path: req.url,
-      method: req.method,
-      nodeVersion: process.version,
-      environment: process.env.NODE_ENV || 'development'
-    });
+    console.log('Processing request with serverless-http handler...');
+    return await handler(req, res);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in request handler:', error);
     return res.status(500).json({
       status: 'error',
       message: 'Internal Server Error',
@@ -37,4 +48,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       timestamp: new Date().toISOString()
     });
   }
-}
+};
