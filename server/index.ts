@@ -1,6 +1,8 @@
-import express, { type Request, Response, NextFunction, Express } from "express";
+import express, { type Express, Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+
+import http from "http";
 
 // Create and configure the Express app
 export function createApp(): Express {
@@ -56,18 +58,35 @@ if (process.env.NODE_ENV !== 'production') {
   const port = parseInt(process.env.PORT || "5002", 10);
   
   if (app.get("env") === "development") {
-    const server = require('http').createServer(app);
-    setupVite(app, server).then(() => {
-      server.listen(port, "0.0.0.0", () => {
-        log(`Development server running on port ${port}`);
+    const server = http.createServer(app);
+    
+    // Only try to use Vite in development if we're not in a serverless environment
+    if (process.env.VERCEL !== '1') {
+      setupVite(app, server).then(() => {
+        startServer(server, port);
+      }).catch(err => {
+        console.error('Failed to setup Vite:', err);
+        console.log('Falling back to static file serving...');
+        serveStatic(app);
+        startServer(server, port);
       });
-    });
+    } else {
+      serveStatic(app);
+      startServer(server, port);
+    }
   } else {
     serveStatic(app);
     app.listen(port, "0.0.0.0", () => {
       log(`Server running on port ${port}`);
     });
   }
+}
+
+function startServer(server: any, port: number) {
+  server.listen(port, "0.0.0.0", () => {
+    log(`Server running on port ${port} in ${process.env.NODE_ENV} mode`);
+    console.log(`Access the server at http://localhost:${port}`);
+  });
 }
 
 // Export the app for Vercel serverless functions

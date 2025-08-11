@@ -5,6 +5,7 @@ import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
+import { fileURLToPath } from 'node:url';
 
 const viteLogger = createLogger();
 
@@ -68,18 +69,58 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
-
-  if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
+  const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "public");
+  
+  // Only serve static files if the directory exists
+  if (fs.existsSync(publicDir)) {
+    app.use(express.static(publicDir, { maxAge: "1y" }));
+    
+    // Serve index.html for all other routes to support client-side routing
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(publicDir, "index.html"));
+    });
+  } else if (process.env.NODE_ENV === 'development') {
+    // In development, just show a simple message if public dir doesn't exist
+    app.get("*", (req, res) => {
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Development Server</title>
+            <style>
+              body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                max-width: 800px; 
+                margin: 0 auto; 
+                padding: 2rem;
+                line-height: 1.6;
+              }
+              code { 
+                background: #f0f0f0; 
+                padding: 0.2em 0.4em; 
+                border-radius: 3px; 
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Development Server Running</h1>
+            <p>The server is running in development mode, but no frontend build was found.</p>
+            <p>To start the frontend development server, run:</p>
+            <pre><code>cd client && npm run dev</code></pre>
+            <p>Then open <a href="http://localhost:5173">http://localhost:5173</a> in your browser.</p>
+          </body>
+        </html>
+      `);
+    });
+  } else {
+    // In production, log an error if public dir doesn't exist
+    console.error(`Error: Public directory not found at ${publicDir}`);
+    
+    app.get("*", (req, res) => {
+      res.status(500).json({
+        error: "Frontend build not found",
+        message: "The frontend build directory is missing. Please build the client application first."
+      });
+    });
   }
-
-  app.use(express.static(distPath));
-
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
-  });
 }
