@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "client/dist/**",
+      "src": "dist/public/**",
       "use": "@vercel/static"
     }
   ],
@@ -17,9 +17,9 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/$1",
+      "dest": "/api",
       "headers": {
-        "Cache-Control": "s-maxage=31536000, immutable"
+        "Cache-Control": "s-maxage=0, no-cache, no-store, must-revalidate"
       }
     }
   ]
