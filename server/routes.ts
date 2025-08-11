@@ -1,17 +1,39 @@
-import type { Request, Response } from "express";
-import type { Express } from "express";
+import type { Request, Response, Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
+// Simple logger for routes
+const logger = {
+  info: (message: string, ...args: any[]) => console.log(`[ROUTES] ${message}`, ...args),
+  error: (message: string, ...args: any[]) => console.error(`[ROUTES] ${message}`, ...args)
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Test endpoint to verify server is working
+  app.get("/api/test", (_req: Request, res: Response) => {
+    logger.info("Test endpoint hit");
+    res.status(200).json({ 
+      status: "success", 
+      message: "Server is working correctly",
+      timestamp: new Date().toISOString() 
+    });
+  });
+
   // Health check endpoint
   app.get("/api/health", (_req: Request, res: Response) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+    res.status(200).json({ 
+      status: "ok", 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development'
+    });
   });
 
   // API routes
   app.get("/api/example", (_req: Request, res: Response) => {
-    res.json({ message: "Hello from the API!" });
+    res.json({ 
+      message: "Hello from the API!",
+      timestamp: new Date().toISOString()
+    });
   });
 
   // Catch-all route for undefined API endpoints
